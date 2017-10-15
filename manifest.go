@@ -1,7 +1,5 @@
 /*
-# createreactappmanifest integrate [Create React App](https://github.com/facebookincubator/create-react-app) with Go web application
-
-
+createreactappmanifest integrate [Create React App](https://github.com/facebookincubator/create-react-app) with Go web application
 */
 package manifest
 
