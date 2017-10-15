@@ -31,18 +31,28 @@ type Manifest struct {
 }
 
 func New(cfg *Config) (m *Manifest, err error) {
-	var f *os.File
-	f, err = os.Open(filepath.Join(cfg.ManifestDir, manifestFileName))
-	if err != nil {
-		err = kerrs.Wrapv(err, "failed to open asset-manifest.json file")
-		return
-	}
-	defer f.Close()
 	var data map[string]string
-	err = json.NewDecoder(f).Decode(&data)
-	if err != nil {
-		err = kerrs.Wrapv(err, "failed to decode asset-manifest.json file")
-		return
+
+	if cfg.IsDev {
+		data = map[string]string{
+			"main.css":     "",
+			"main.css.map": "",
+			"main.js":      cfg.DevBundleURL,
+			"main.js.map":  cfg.DevBundleURL + ".map",
+		}
+	} else {
+		var f *os.File
+		f, err = os.Open(filepath.Join(cfg.ManifestDir, manifestFileName))
+		if err != nil {
+			err = kerrs.Wrapv(err, "failed to open asset-manifest.json file")
+			return
+		}
+		defer f.Close()
+		err = json.NewDecoder(f).Decode(&data)
+		if err != nil {
+			err = kerrs.Wrapv(err, "failed to decode asset-manifest.json file")
+			return
+		}
 	}
 
 	var publicfiles, mfiles []os.FileInfo
@@ -72,7 +82,10 @@ func (m *Manifest) GetURL(name string) (url string) {
 	if urlpart, ok := m.mdata[name]; ok {
 		p = urlpart
 	}
-	url = filepath.Join(m.cfg.PublicURL, p)
+	if m.cfg.IsDev {
+		return p
+	}
+	url = filepath.Join(m.prefix, p)
 	return
 }
 

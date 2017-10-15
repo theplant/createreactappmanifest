@@ -47,6 +47,26 @@ var cases = []struct {
 		},
 	},
 	{
+		name: "expose all without PublicURL",
+		cfg: &manifest.Config{
+			ManifestDir: "./example/build",
+			IsDev:       false,
+		},
+		exposedURLs: []string{
+			"/favicon.ico",
+			"/service-worker.js",
+			"/asset-manifest.json",
+			"/static/css/main.c17080f1.css",
+			"/static/css/main.c17080f1.css.map",
+			"/static/js/main.33fb4ad2.js",
+			"/static/js/main.33fb4ad2.js.map",
+			"/static/media/logo.5d5d9eef.svg",
+			"/demo.html",
+			"/img/logo.jpg",
+			"/javascripts/pace.js",
+		},
+	},
+	{
 		name: "with public url prefix /cms",
 		cfg: &manifest.Config{
 			PublicURL:   "/cms",
@@ -77,13 +97,14 @@ var cases = []struct {
 	{
 		name: "exclude top level *.html",
 		cfg: &manifest.Config{
-			PublicURL:             "/cms",
+			PublicURL:             "cms",
 			ManifestDir:           "./example/build",
 			MountExcludeForPublic: "*.html",
 			IsDev: false,
 		},
 		getURLNames: [][]string{
 			[]string{"demo.html", "/cms/demo.html"},
+			[]string{"img/logo.jpg", "/cms/img/logo.jpg"},
 		},
 		exposedURLs: []string{
 			"/cms/favicon.ico",
@@ -102,9 +123,67 @@ var cases = []struct {
 			"/cms/index.html",
 		},
 	},
+	{
+		name: "dev with PublicURL",
+		cfg: &manifest.Config{
+			PublicURL:    "/cms",
+			ManifestDir:  "./example/public",
+			IsDev:        true,
+			DevBundleURL: "http://localhost:3000/static/js/bundle.js",
+		},
+		getURLNames: [][]string{
+			[]string{"main.css", ""},
+			[]string{"main.css.map", ""},
+			[]string{"main.js", "http://localhost:3000/static/js/bundle.js"},
+			[]string{"main.js.map", "http://localhost:3000/static/js/bundle.js.map"},
+		},
+		exposedURLs: []string{
+			"/cms/favicon.ico",
+			"/cms/img/logo.jpg",
+			"/cms/javascripts/pace.js",
+		},
+		notExposedURLs: []string{
+			"/cms/asset-manifest.json",
+			"/cms/service-worker.js",
+			"/cms/static/css/main.c17080f1.css",
+			"/cms/static/css/main.c17080f1.css.map",
+			"/cms/static/js/main.33fb4ad2.js",
+			"/cms/static/js/main.33fb4ad2.js.map",
+			"/cms/static/media/logo.5d5d9eef.svg",
+		},
+	},
+	{
+		name: "dev without PublicURL",
+		cfg: &manifest.Config{
+			PublicURL:    "",
+			ManifestDir:  "./example/public",
+			IsDev:        true,
+			DevBundleURL: "http://localhost:3000/static/js/bundle.js",
+		},
+		getURLNames: [][]string{
+			[]string{"main.css", ""},
+			[]string{"main.css.map", ""},
+			[]string{"main.js", "http://localhost:3000/static/js/bundle.js"},
+			[]string{"main.js.map", "http://localhost:3000/static/js/bundle.js.map"},
+		},
+		exposedURLs: []string{
+			"/favicon.ico",
+			"/img/logo.jpg",
+			"/javascripts/pace.js",
+		},
+		notExposedURLs: []string{
+			"/asset-manifest.json",
+			"/service-worker.js",
+			"/static/css/main.c17080f1.css",
+			"/static/css/main.c17080f1.css.map",
+			"/static/js/main.33fb4ad2.js",
+			"/static/js/main.33fb4ad2.js.map",
+			"/static/media/logo.5d5d9eef.svg",
+		},
+	},
 }
 
-func TestMount(t *testing.T) {
+func TestGetURL_Mount(t *testing.T) {
 	for _, c := range cases {
 		mni, err := manifest.New(c.cfg)
 		if err != nil {
