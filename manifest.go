@@ -1,3 +1,8 @@
+/*
+# createreactappmanifest integrate [Create React App](https://github.com/facebookincubator/create-react-app) with Go web application
+
+
+*/
 package manifest
 
 import (
@@ -77,6 +82,9 @@ func New(cfg *Config) (m *Manifest, err error) {
 	return
 }
 
+/*
+GetURL get dynamic compiled url like `/static/css/main.c17080f1.css` with simple name like `main.css` to be used in views
+*/
 func (m *Manifest) GetURL(name string) (url string) {
 	p := name
 	if urlpart, ok := m.mdata[name]; ok {
@@ -89,6 +97,9 @@ func (m *Manifest) GetURL(name string) (url string) {
 	return
 }
 
+/*
+Mount automatically mounts Create React App build directory into Go ServeMux
+*/
 func (m *Manifest) Mount(mux *http.ServeMux) {
 	h := http.FileServer(http.Dir(m.cfg.ManifestDir))
 	if m.prefix != "/" {
