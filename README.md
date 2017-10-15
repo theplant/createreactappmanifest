@@ -1,6 +1,6 @@
 
 
-createreactappmanifest integrate [Create React App](<a href="https://github.com/facebookincubator/create-react-app">https://github.com/facebookincubator/create-react-app</a>) with Go web application
+createreactappmanifest integrate Create React App with Go web application
 
 
 
