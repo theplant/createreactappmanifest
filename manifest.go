@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/theplant/appkit/kerrs"
 )
@@ -91,8 +92,16 @@ func (m *Manifest) GetURL(name string) (url string) {
 	if m.cfg.IsDev {
 		return p
 	}
-	url = filepath.Join(m.prefix, p)
+	url = withPrefix(m.prefix, p)
 	return
+}
+
+func withPrefix(prefix, p string) string {
+	// in case p included the prefix, fix /cms/cms/static/css/main.c17080f1.css error
+	if strings.Index(filepath.Join("/", p), prefix) == 0 {
+		prefix = "/"
+	}
+	return filepath.Join(prefix, p)
 }
 
 /*

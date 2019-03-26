@@ -100,7 +100,7 @@ var cases = []struct {
 			PublicURL:             "cms",
 			ManifestDir:           "./example/build",
 			MountExcludeForPublic: "*.html",
-			IsDev: false,
+			IsDev:                 false,
 		},
 		getURLNames: [][]string{
 			[]string{"demo.html", "/cms/demo.html"},
@@ -123,6 +123,23 @@ var cases = []struct {
 			"/cms/index.html",
 		},
 	},
+
+	{
+		name: "asset-manifest.json already have prefix /cms",
+		cfg: &manifest.Config{
+			PublicURL:   "cms",
+			ManifestDir: "./example2/build",
+			IsDev:       false,
+		},
+		getURLNames: [][]string{
+			[]string{"main.js", "/cms/static/js/main.1fa3a5ff.chunk.js"},
+		},
+		exposedURLs: []string{
+			"/cms/static/js/main.1fa3a5ff.chunk.js",
+			"/cms/static/css/main.7fd37dcf.chunk.css",
+		},
+	},
+
 	{
 		name: "dev with PublicURL",
 		cfg: &manifest.Config{
