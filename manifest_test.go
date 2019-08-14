@@ -11,10 +11,61 @@ import (
 	manifest "github.com/theplant/createreactappmanifest"
 )
 
+var exposedURLs = []string{
+	"/asset-manifest.json",
+	"/favicon.ico",
+	"/logo192.png",
+	"/logo512.png",
+	"/manifest.json",
+	"/precache-manifest.1b17ff30715505ff589c47309a366a39.js",
+	"/robots.txt",
+	"/service-worker.js",
+	"/static/css/main.2cce8147.chunk.css",
+	"/static/js/main.63bf6d37.chunk.js",
+	"/static/js/main.63bf6d37.chunk.js.map",
+	"/static/js/runtime~main.ea3e0b5a.js",
+	"/static/js/runtime~main.ea3e0b5a.js.map",
+	"/static/css/2.764ccc25.chunk.css",
+	"/static/js/2.f8fd391a.chunk.js",
+	"/static/js/2.f8fd391a.chunk.js.map",
+	"/static/css/2.764ccc25.chunk.css.map",
+	"/static/css/main.2cce8147.chunk.css.map",
+	"/static/media/logo.5d5d9eef.svg",
+}
+
+var exposedURLsWithPrefix = []string{
+	"/cms/asset-manifest.json",
+	"/cms/favicon.ico",
+	"/cms/logo192.png",
+	"/cms/logo512.png",
+	"/cms/manifest.json",
+	"/cms/precache-manifest.1b17ff30715505ff589c47309a366a39.js",
+	"/cms/robots.txt",
+	"/cms/service-worker.js",
+	"/cms/static/css/main.2cce8147.chunk.css",
+	"/cms/static/js/main.63bf6d37.chunk.js",
+	"/cms/static/js/main.63bf6d37.chunk.js.map",
+	"/cms/static/js/runtime~main.ea3e0b5a.js",
+	"/cms/static/js/runtime~main.ea3e0b5a.js.map",
+	"/cms/static/css/2.764ccc25.chunk.css",
+	"/cms/static/js/2.f8fd391a.chunk.js",
+	"/cms/static/js/2.f8fd391a.chunk.js.map",
+	"/cms/static/css/2.764ccc25.chunk.css.map",
+	"/cms/static/css/main.2cce8147.chunk.css.map",
+	"/cms/static/media/logo.5d5d9eef.svg",
+}
+
+var jsURLs = []string{"/static/js/runtime~main.ea3e0b5a.js", "/static/js/2.f8fd391a.chunk.js", "/static/js/main.63bf6d37.chunk.js"}
+var jsURLsWithPrefix = []string{"/cms/static/js/runtime~main.ea3e0b5a.js", "/cms/static/js/2.f8fd391a.chunk.js", "/cms/static/js/main.63bf6d37.chunk.js"}
+
+var cssURLs = []string{"/static/css/2.764ccc25.chunk.css", "/static/css/main.2cce8147.chunk.css"}
+var cssURLsWithPrefix = []string{"/cms/static/css/2.764ccc25.chunk.css", "/cms/static/css/main.2cce8147.chunk.css"}
+
 var cases = []struct {
 	name           string
 	cfg            *manifest.Config
-	getURLNames    [][]string
+	jsURLs         []string
+	cssURLs        []string
 	exposedURLs    []string
 	notExposedURLs []string
 }{
@@ -25,26 +76,9 @@ var cases = []struct {
 			ManifestDir: "./example/build",
 			IsDev:       false,
 		},
-		getURLNames: [][]string{
-			[]string{"main.css", "/static/css/main.c17080f1.css"},
-			[]string{"main.css.map", "/static/css/main.c17080f1.css.map"},
-			[]string{"main.js", "/static/js/main.33fb4ad2.js"},
-			[]string{"main.js.map", "/static/js/main.33fb4ad2.js.map"},
-			[]string{"static/media/logo.svg", "/static/media/logo.5d5d9eef.svg"},
-		},
-		exposedURLs: []string{
-			"/favicon.ico",
-			"/service-worker.js",
-			"/asset-manifest.json",
-			"/static/css/main.c17080f1.css",
-			"/static/css/main.c17080f1.css.map",
-			"/static/js/main.33fb4ad2.js",
-			"/static/js/main.33fb4ad2.js.map",
-			"/static/media/logo.5d5d9eef.svg",
-			"/demo.html",
-			"/img/logo.jpg",
-			"/javascripts/pace.js",
-		},
+		jsURLs:      jsURLs,
+		cssURLs:     cssURLs,
+		exposedURLs: exposedURLs,
 	},
 	{
 		name: "expose all without PublicURL",
@@ -52,19 +86,9 @@ var cases = []struct {
 			ManifestDir: "./example/build",
 			IsDev:       false,
 		},
-		exposedURLs: []string{
-			"/favicon.ico",
-			"/service-worker.js",
-			"/asset-manifest.json",
-			"/static/css/main.c17080f1.css",
-			"/static/css/main.c17080f1.css.map",
-			"/static/js/main.33fb4ad2.js",
-			"/static/js/main.33fb4ad2.js.map",
-			"/static/media/logo.5d5d9eef.svg",
-			"/demo.html",
-			"/img/logo.jpg",
-			"/javascripts/pace.js",
-		},
+		jsURLs:      jsURLs,
+		cssURLs:     cssURLs,
+		exposedURLs: exposedURLs,
 	},
 	{
 		name: "with public url prefix /cms",
@@ -73,26 +97,9 @@ var cases = []struct {
 			ManifestDir: "./example/build",
 			IsDev:       false,
 		},
-		getURLNames: [][]string{
-			[]string{"main.css", "/cms/static/css/main.c17080f1.css"},
-			[]string{"main.css.map", "/cms/static/css/main.c17080f1.css.map"},
-			[]string{"main.js", "/cms/static/js/main.33fb4ad2.js"},
-			[]string{"main.js.map", "/cms/static/js/main.33fb4ad2.js.map"},
-			[]string{"static/media/logo.svg", "/cms/static/media/logo.5d5d9eef.svg"},
-		},
-		exposedURLs: []string{
-			"/cms/favicon.ico",
-			"/cms/service-worker.js",
-			"/cms/asset-manifest.json",
-			"/cms/static/css/main.c17080f1.css",
-			"/cms/static/css/main.c17080f1.css.map",
-			"/cms/static/js/main.33fb4ad2.js",
-			"/cms/static/js/main.33fb4ad2.js.map",
-			"/cms/static/media/logo.5d5d9eef.svg",
-			"/cms/demo.html",
-			"/cms/img/logo.jpg",
-			"/cms/javascripts/pace.js",
-		},
+		jsURLs:      jsURLsWithPrefix,
+		cssURLs:     cssURLsWithPrefix,
+		exposedURLs: exposedURLsWithPrefix,
 	},
 	{
 		name: "exclude top level *.html",
@@ -102,28 +109,35 @@ var cases = []struct {
 			MountExcludeForPublic: "*.html",
 			IsDev:                 false,
 		},
-		getURLNames: [][]string{
-			[]string{"demo.html", "/cms/demo.html"},
-			[]string{"img/logo.jpg", "/cms/img/logo.jpg"},
-		},
-		exposedURLs: []string{
-			"/cms/favicon.ico",
-			"/cms/service-worker.js",
-			"/cms/asset-manifest.json",
-			"/cms/static/css/main.c17080f1.css",
-			"/cms/static/css/main.c17080f1.css.map",
-			"/cms/static/js/main.33fb4ad2.js",
-			"/cms/static/js/main.33fb4ad2.js.map",
-			"/cms/static/media/logo.5d5d9eef.svg",
-			"/cms/img/logo.jpg",
-			"/cms/javascripts/pace.js",
-		},
+		jsURLs:      jsURLsWithPrefix,
+		cssURLs:     cssURLsWithPrefix,
+		exposedURLs: exposedURLsWithPrefix,
 		notExposedURLs: []string{
-			"/cms/demo.html",
 			"/cms/index.html",
 		},
 	},
-
+	{
+		name: "dev with PublicURL",
+		cfg: &manifest.Config{
+			PublicURL:    "/cms",
+			ManifestDir:  "./example/build",
+			IsDev:        true,
+			DevBundleURL: "http://localhost:3000/static/js/bundle.js",
+		},
+		jsURLs:  []string{"http://localhost:3000/static/js/bundle.js"},
+		cssURLs: []string{},
+	},
+	{
+		name: "dev without PublicURL",
+		cfg: &manifest.Config{
+			PublicURL:    "",
+			ManifestDir:  "./example/build",
+			IsDev:        true,
+			DevBundleURL: "http://localhost:3000/static/js/bundle.js",
+		},
+		jsURLs:  []string{"http://localhost:3000/static/js/bundle.js"},
+		cssURLs: []string{},
+	},
 	{
 		name: "asset-manifest.json already have prefix /cms",
 		cfg: &manifest.Config{
@@ -131,71 +145,13 @@ var cases = []struct {
 			ManifestDir: "./example2/build",
 			IsDev:       false,
 		},
-		getURLNames: [][]string{
-			[]string{"main.js", "/cms/static/js/main.1fa3a5ff.chunk.js"},
-		},
+		jsURLs:  []string{"/cms/static/js/runtime~main.f50c3107.js", "/cms/static/js/2.ea82b0cd.chunk.js", "/cms/static/js/main.7a7a44d8.chunk.js"},
+		cssURLs: []string{"/cms/static/css/main.2cce8147.chunk.css"},
 		exposedURLs: []string{
-			"/cms/static/js/main.1fa3a5ff.chunk.js",
-			"/cms/static/css/main.7fd37dcf.chunk.css",
-		},
-	},
-
-	{
-		name: "dev with PublicURL",
-		cfg: &manifest.Config{
-			PublicURL:    "/cms",
-			ManifestDir:  "./example/public",
-			IsDev:        true,
-			DevBundleURL: "http://localhost:3000/static/js/bundle.js",
-		},
-		getURLNames: [][]string{
-			[]string{"main.css", ""},
-			[]string{"main.css.map", ""},
-			[]string{"main.js", "http://localhost:3000/static/js/bundle.js"},
-			[]string{"main.js.map", "http://localhost:3000/static/js/bundle.js.map"},
-		},
-		exposedURLs: []string{
-			"/cms/favicon.ico",
-			"/cms/img/logo.jpg",
-			"/cms/javascripts/pace.js",
-		},
-		notExposedURLs: []string{
-			"/cms/asset-manifest.json",
-			"/cms/service-worker.js",
-			"/cms/static/css/main.c17080f1.css",
-			"/cms/static/css/main.c17080f1.css.map",
-			"/cms/static/js/main.33fb4ad2.js",
-			"/cms/static/js/main.33fb4ad2.js.map",
-			"/cms/static/media/logo.5d5d9eef.svg",
-		},
-	},
-	{
-		name: "dev without PublicURL",
-		cfg: &manifest.Config{
-			PublicURL:    "",
-			ManifestDir:  "./example/public",
-			IsDev:        true,
-			DevBundleURL: "http://localhost:3000/static/js/bundle.js",
-		},
-		getURLNames: [][]string{
-			[]string{"main.css", ""},
-			[]string{"main.css.map", ""},
-			[]string{"main.js", "http://localhost:3000/static/js/bundle.js"},
-			[]string{"main.js.map", "http://localhost:3000/static/js/bundle.js.map"},
-		},
-		exposedURLs: []string{
-			"/favicon.ico",
-			"/img/logo.jpg",
-			"/javascripts/pace.js",
-		},
-		notExposedURLs: []string{
-			"/asset-manifest.json",
-			"/service-worker.js",
-			"/static/css/main.c17080f1.css",
-			"/static/css/main.c17080f1.css.map",
-			"/static/js/main.33fb4ad2.js",
-			"/static/js/main.33fb4ad2.js.map",
-			"/static/media/logo.5d5d9eef.svg",
+			"/cms/static/js/runtime~main.f50c3107.js",
+			"/cms/static/js/2.ea82b0cd.chunk.js",
+			"/cms/static/js/main.7a7a44d8.chunk.js",
+			"/cms/static/css/main.2cce8147.chunk.css",
 		},
 	},
 }
@@ -207,12 +163,16 @@ func TestGetURL_Mount(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		for _, name := range c.getURLNames {
-			url := mni.GetURL(name[0])
-			diff := testingutils.PrettyJsonDiff(name[1], url)
-			if len(diff) > 0 {
-				t.Error(diff)
-			}
+		jsURLs := mni.GetJSURLs()
+		jsURLsDiff := testingutils.PrettyJsonDiff(jsURLs, c.jsURLs)
+		if len(jsURLsDiff) > 0 {
+			t.Error(jsURLsDiff)
+		}
+
+		cssURLs := mni.GetCSSURLs()
+		cssURLsDiff := testingutils.PrettyJsonDiff(cssURLs, c.cssURLs)
+		if len(cssURLsDiff) > 0 {
+			t.Error(cssURLsDiff)
 		}
 
 		mux := http.NewServeMux()
@@ -234,7 +194,7 @@ func TestGetURL_Mount(t *testing.T) {
 			mux.ServeHTTP(rr, req)
 			if rr.Code != http.StatusNotFound {
 				res, _ := httputil.DumpResponse(rr.Result(), false)
-				t.Errorf("should get %s OK, but was %d, response is: \n%s", u, rr.Code, string(res))
+				t.Errorf("should get %s StatusNotFound, but was %d, response is: \n%s", u, rr.Code, string(res))
 			}
 		}
 	}
