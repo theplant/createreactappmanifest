@@ -9,7 +9,7 @@ import (
 )
 
 /*
-Mount expose assets with ServeMux, and GetURL get correct assets path for you.
+Mount expose assets with ServeMux, and GetJSURLs, GetCSSURLs get correct assets path for you.
 */
 func ExampleNew() {
 	mux := http.DefaultServeMux
