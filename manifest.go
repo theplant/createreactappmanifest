@@ -9,12 +9,20 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/theplant/appkit/kerrs"
 )
 
 const manifestFileName = "asset-manifest.json"
+
+const runtimeJSAssetKey = "runtime~main.js"
+const mainJSAssetKey = "main.js"
+const mainCSSAssetKey = "main.css"
+
+var jsChunkRegexp = regexp.MustCompile(`^static/js/\d+\.[a-z0-9]+\.chunk\.js$`)
+var cssChunkRegexp = regexp.MustCompile(`^static/css/\d+\.[a-z0-9]+\.chunk\.css$`)
 
 type Config struct {
 	// the PUBLIC_URL environment variable when do yarn build in react app
@@ -24,25 +32,55 @@ type Config struct {
 	// sometime you want to excludes the files in react app public folder.
 	MountExcludeForPublic string
 	IsDev                 bool
-	DevBundleURL          string
+
+	/*
+		Disable the code splitting in development mode, so you can get only one bundle at `http://localhost:3000/static/js/bundle.js`
+		1. Install `@rescripts/cli` as a devDependency. `yarn add -D @rescripts/cli`
+		2. Change the start script in package.json from "start": "react-scripts start" to "start": "rescripts start"
+		3. Change the build script in package.json from "build": "react-scripts build" to "build": "INLINE_RUNTIME_CHUNK=false rescripts build"
+		4. Create a `.rescriptsrc.js` file at your project root with the following contents:
+		```
+		module.exports = config => {
+		if (process.env.NODE_ENV === "development") {
+			config.optimization.runtimeChunk = false;
+			config.optimization.splitChunks = {
+			cacheGroups: {
+				default: false
+			}
+			};
+		}
+
+		return config;
+		};
+		```
+	*/
+	DevBundleURL string
+}
+
+type MData struct {
+	JS  []string
+	CSS []string
 }
 
 type Manifest struct {
 	cfg        *Config
-	mdata      map[string]string
+	mdata      MData
 	mountFiles []os.FileInfo
 	prefix     string
 }
 
+type Data struct {
+	Files map[string]string
+}
+
 func New(cfg *Config) (m *Manifest, err error) {
-	var data map[string]string
+	var data Data
+	var mdata MData
 
 	if cfg.IsDev {
-		data = map[string]string{
-			"main.css":     "",
-			"main.css.map": "",
-			"main.js":      cfg.DevBundleURL,
-			"main.js.map":  cfg.DevBundleURL + ".map",
+		mdata = MData{
+			JS:  []string{cfg.DevBundleURL},
+			CSS: []string{},
 		}
 	} else {
 		var f *os.File
@@ -57,6 +95,7 @@ func New(cfg *Config) (m *Manifest, err error) {
 			err = kerrs.Wrapv(err, "failed to decode asset-manifest.json file")
 			return
 		}
+		mdata = processAssetsURLs(data)
 	}
 
 	var publicfiles, mfiles []os.FileInfo
@@ -74,26 +113,86 @@ func New(cfg *Config) (m *Manifest, err error) {
 	prefix := filepath.Join("/", cfg.PublicURL)
 	m = &Manifest{
 		cfg:        cfg,
-		mdata:      data,
+		mdata:      mdata,
 		mountFiles: mfiles,
 		prefix:     prefix,
 	}
 	return
 }
 
+func (mdata *MData) appendJS(url string) {
+	mdata.JS = append(mdata.JS, url)
+}
+
+func (mdata *MData) appendCSS(url string) {
+	mdata.CSS = append(mdata.CSS, url)
+}
+
+func processAssetsURLs(data Data) MData {
+	files := data.Files
+	mdata := MData{
+		JS:  []string{},
+		CSS: []string{},
+	}
+
+	// runtime js need to be the first one
+	if runTimeJS, ok := files[runtimeJSAssetKey]; ok {
+		mdata.appendJS(runTimeJS)
+	}
+
+	for key := range files {
+		if jsChunkRegexp.MatchString(key) {
+			mdata.appendJS(files[key])
+			continue
+		}
+		if cssChunkRegexp.MatchString(key) {
+			mdata.appendCSS(files[key])
+		}
+	}
+
+	// main.js need to be the last one
+	if mainJS, ok := files[mainJSAssetKey]; ok {
+		mdata.appendJS(mainJS)
+	}
+
+	// main.css need to be the last one
+	if mainCSS, ok := files[mainCSSAssetKey]; ok {
+		mdata.appendCSS(mainCSS)
+	}
+
+	return mdata
+}
+
+func prefixURLs(prefix string, urls []string) []string {
+	urlsWithPrefix := make([]string, len(urls))
+	for i, url := range urls {
+		urlsWithPrefix[i] = withPrefix(prefix, url)
+	}
+	return urlsWithPrefix
+}
+
 /*
-GetURL get dynamic compiled url like `/static/css/main.c17080f1.css` with simple name like `main.css` to be used in views
+GetJSURLs get all the js urls
 */
-func (m *Manifest) GetURL(name string) (url string) {
-	p := name
-	if urlpart, ok := m.mdata[name]; ok {
-		p = urlpart
-	}
+func (m *Manifest) GetJSURLs() (urls []string) {
+	urls = m.mdata.JS
 	if m.cfg.IsDev {
-		return p
+		return
 	}
-	url = withPrefix(m.prefix, p)
-	return
+
+	return prefixURLs(m.prefix, urls)
+}
+
+/*
+GetCSSURLs get all the css urls
+*/
+func (m *Manifest) GetCSSURLs() (urls []string) {
+	urls = m.mdata.CSS
+	if m.cfg.IsDev {
+		return
+	}
+
+	return prefixURLs(m.prefix, urls)
 }
 
 func withPrefix(prefix, p string) string {

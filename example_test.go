@@ -9,7 +9,7 @@ import (
 )
 
 /*
-Mount expose assets with ServeMux, and GetURL get correct assets path for you.
+Mount expose assets with ServeMux, and GetJSURLs, GetCSSURLs get correct assets path for you.
 */
 func ExampleNew() {
 	mux := http.DefaultServeMux
@@ -21,8 +21,17 @@ func ExampleNew() {
 
 	renderTemplate := func() string {
 		buf := bytes.NewBuffer(nil)
-		fmt.Fprintf(buf, `<link href="%s" rel="stylesheet">`, m.GetURL("main.css"))
-		fmt.Fprintf(buf, `<script type="text/javascript" src="%s"></script>`, m.GetURL("main.js"))
+
+		jsURLs := m.GetJSURLs()
+		for _, url := range jsURLs {
+			fmt.Fprintf(buf, `<script type="text/javascript" src="%s"></script>`, url)
+		}
+
+		cssURLs := m.GetCSSURLs()
+		for _, url := range cssURLs {
+			fmt.Fprintf(buf, `<link href="%s" rel="stylesheet">`, url)
+		}
+
 		return buf.String()
 	}
 
