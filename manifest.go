@@ -37,7 +37,8 @@ type Config struct {
 		Disable the code splitting in development mode, so you can get only one bundle at `http://localhost:3000/static/js/bundle.js`
 		1. Install `@rescripts/cli` as a devDependency. `yarn add -D @rescripts/cli`
 		2. Change the start script in package.json from "start": "react-scripts start" to "start": "rescripts start"
-		3. Create a `.rescriptsrc.js` file at your project root with the following contents:
+		3. Change the build script in package.json from "build": "react-scripts build" to "build": "INLINE_RUNTIME_CHUNK=false rescripts build"
+		4. Create a `.rescriptsrc.js` file at your project root with the following contents:
 		```
 		module.exports = config => {
 		if (process.env.NODE_ENV === "development") {
