@@ -17,20 +17,20 @@ var exposedURLs = []string{
 	"/logo192.png",
 	"/logo512.png",
 	"/manifest.json",
-	"/precache-manifest.1b17ff30715505ff589c47309a366a39.js",
 	"/robots.txt",
 	"/service-worker.js",
-	"/static/css/main.2cce8147.chunk.css",
-	"/static/js/main.63bf6d37.chunk.js",
-	"/static/js/main.63bf6d37.chunk.js.map",
-	"/static/js/runtime~main.ea3e0b5a.js",
-	"/static/js/runtime~main.ea3e0b5a.js.map",
+	"/static/css/main.b100e6da.chunk.css",
+	"/static/js/main.f2081a32.chunk.js",
+	"/static/js/main.f2081a32.chunk.js.map",
+	"/static/js/runtime-main.62087466.js",
+	"/static/js/runtime-main.62087466.js.map",
 	"/static/css/2.764ccc25.chunk.css",
-	"/static/js/2.f8fd391a.chunk.js",
-	"/static/js/2.f8fd391a.chunk.js.map",
+	"/static/js/2.76f9f456.chunk.js",
+	"/static/js/2.76f9f456.chunk.js.map",
+	"/precache-manifest.3a2c3995787ad241ddb8cff5b35d6418.js",
 	"/static/css/2.764ccc25.chunk.css.map",
-	"/static/css/main.2cce8147.chunk.css.map",
-	"/static/media/logo.5d5d9eef.svg",
+	"/static/css/main.b100e6da.chunk.css.map",
+	"/static/media/logo.25bf045c.svg",
 }
 
 var exposedURLsWithPrefix = []string{
@@ -39,27 +39,27 @@ var exposedURLsWithPrefix = []string{
 	"/cms/logo192.png",
 	"/cms/logo512.png",
 	"/cms/manifest.json",
-	"/cms/precache-manifest.1b17ff30715505ff589c47309a366a39.js",
 	"/cms/robots.txt",
 	"/cms/service-worker.js",
-	"/cms/static/css/main.2cce8147.chunk.css",
-	"/cms/static/js/main.63bf6d37.chunk.js",
-	"/cms/static/js/main.63bf6d37.chunk.js.map",
-	"/cms/static/js/runtime~main.ea3e0b5a.js",
-	"/cms/static/js/runtime~main.ea3e0b5a.js.map",
+	"/cms/static/css/main.b100e6da.chunk.css",
+	"/cms/static/js/main.f2081a32.chunk.js",
+	"/cms/static/js/main.f2081a32.chunk.js.map",
+	"/cms/static/js/runtime-main.62087466.js",
+	"/cms/static/js/runtime-main.62087466.js.map",
 	"/cms/static/css/2.764ccc25.chunk.css",
-	"/cms/static/js/2.f8fd391a.chunk.js",
-	"/cms/static/js/2.f8fd391a.chunk.js.map",
+	"/cms/static/js/2.76f9f456.chunk.js",
+	"/cms/static/js/2.76f9f456.chunk.js.map",
+	"/cms/precache-manifest.3a2c3995787ad241ddb8cff5b35d6418.js",
 	"/cms/static/css/2.764ccc25.chunk.css.map",
-	"/cms/static/css/main.2cce8147.chunk.css.map",
-	"/cms/static/media/logo.5d5d9eef.svg",
+	"/cms/static/css/main.b100e6da.chunk.css.map",
+	"/cms/static/media/logo.25bf045c.svg",
 }
 
-var jsURLs = []string{"/static/js/runtime~main.ea3e0b5a.js", "/static/js/2.f8fd391a.chunk.js", "/static/js/main.63bf6d37.chunk.js"}
-var jsURLsWithPrefix = []string{"/cms/static/js/runtime~main.ea3e0b5a.js", "/cms/static/js/2.f8fd391a.chunk.js", "/cms/static/js/main.63bf6d37.chunk.js"}
+var jsURLs = []string{"/static/js/runtime-main.62087466.js", "/static/js/2.76f9f456.chunk.js", "/static/js/main.f2081a32.chunk.js"}
+var jsURLsWithPrefix = []string{"/cms/static/js/runtime-main.62087466.js", "/cms/static/js/2.76f9f456.chunk.js", "/cms/static/js/main.f2081a32.chunk.js"}
 
-var cssURLs = []string{"/static/css/2.764ccc25.chunk.css", "/static/css/main.2cce8147.chunk.css"}
-var cssURLsWithPrefix = []string{"/cms/static/css/2.764ccc25.chunk.css", "/cms/static/css/main.2cce8147.chunk.css"}
+var cssURLs = []string{"/static/css/2.764ccc25.chunk.css", "/static/css/main.b100e6da.chunk.css"}
+var cssURLsWithPrefix = []string{"/cms/static/css/2.764ccc25.chunk.css", "/cms/static/css/main.b100e6da.chunk.css"}
 
 var cases = []struct {
 	name           string
@@ -145,13 +145,13 @@ var cases = []struct {
 			ManifestDir: "./example2/build",
 			IsDev:       false,
 		},
-		jsURLs:  []string{"/cms/static/js/runtime~main.f50c3107.js", "/cms/static/js/2.ea82b0cd.chunk.js", "/cms/static/js/main.7a7a44d8.chunk.js"},
-		cssURLs: []string{"/cms/static/css/main.2cce8147.chunk.css"},
+		jsURLs:  []string{"/cms/static/js/runtime-main.124c78f9.js", "/cms/static/js/2.cc7f12e5.chunk.js", "/cms/static/js/main.ca0dff28.chunk.js"},
+		cssURLs: []string{"/cms/static/css/main.b100e6da.chunk.css"},
 		exposedURLs: []string{
-			"/cms/static/js/runtime~main.f50c3107.js",
-			"/cms/static/js/2.ea82b0cd.chunk.js",
-			"/cms/static/js/main.7a7a44d8.chunk.js",
-			"/cms/static/css/main.2cce8147.chunk.css",
+			"/cms/static/js/runtime-main.124c78f9.js",
+			"/cms/static/js/2.cc7f12e5.chunk.js",
+			"/cms/static/js/main.ca0dff28.chunk.js",
+			"/cms/static/css/main.b100e6da.chunk.css",
 		},
 	},
 }

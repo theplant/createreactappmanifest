@@ -17,7 +17,7 @@ import (
 
 const manifestFileName = "asset-manifest.json"
 
-const runtimeJSAssetKey = "runtime~main.js"
+const runtimeJSAssetKey = "runtime-main.js"
 const mainJSAssetKey = "main.js"
 const mainCSSAssetKey = "main.css"
 
